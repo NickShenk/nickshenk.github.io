@@ -14,6 +14,13 @@
 <body>
 
 <script>
+  document.addEventListener("pointerdown", function(event) {
+      let x = event.clientX;
+      let y = event.clientY;
+
+      callback(x, y);
+    });
+  }
   // Curved Rectangle Function
   function curvedRect(x, y, width, height, color, curve) {
     let rect = document.createElement("div");
@@ -56,6 +63,11 @@
 
   curvedRect(450, 250, 250, 120, "dodgerblue", 20);
   drawText(480, 290, "Cool Button", "white", "Verdana", 22);
+  while (True) {
+    getClickPosition(function(x, y) {
+    console.log("Clicked at:", x, y);
+  });
+  }
 
 </script>
 
