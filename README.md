@@ -63,7 +63,7 @@
 
   curvedRect(450, 250, 250, 120, "dodgerblue", 20);
   drawText(480, 290, "Cool Button", "white", "Verdana", 22);
-  while (True) {
+  while (1) {
     getClickPosition(function(x, y) {
     console.log("Clicked at:", x, y);
   });
