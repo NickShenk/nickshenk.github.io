@@ -17,10 +17,8 @@
   document.addEventListener("pointerdown", function(event) {
       let x = event.clientX;
       let y = event.clientY;
-
       callback(x, y);
-    });
-  }
+  };
   // Curved Rectangle Function
   function curvedRect(x, y, width, height, color, curve) {
     let rect = document.createElement("div");
