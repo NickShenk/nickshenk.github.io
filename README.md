@@ -21,8 +21,12 @@
       callback(x, y);
     });
   }
-  // Curved Rectangle Function
+  getClickPosition(function(x, y) {
+    console.log("Clicked at:", x, y);
+  });
+  
   function curvedRect(x, y, width, height, color, curve) {
+  // Curved Rectangle Function
     let rect = document.createElement("div");
 
     rect.style.position = "absolute";
@@ -63,11 +67,6 @@
 
   curvedRect(450, 250, 250, 120, "dodgerblue", 20);
   drawText(480, 290, "Cool Button", "white", "Verdana", 22);
-  while (1) {
-    getClickPosition(function(x, y) {
-    console.log("Clicked at:", x, y);
-  });
-  }
 
 </script>
 
