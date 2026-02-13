@@ -31,7 +31,7 @@
 
   let objects = [];
 
-  function addRect(x, y, width, height, color, curve) {
+  function addRect(x, y, width, height, color, curve, rotation = 0) {
     objects.push({
       type: "rect",
       x: x,
@@ -40,6 +40,7 @@
       height: height,
       color: color,
       curve: curve,
+      rotation: rotation,
       vx: 0,   // velocity X
       vy: 0    // velocity Y
     });
@@ -69,8 +70,7 @@
     });
   }
 
-
-  function drawRoundedRect(x, y, width, height, radius, color) {
+function drawRoundedRect(x, y, width, height, radius, color) {
     ctx.fillStyle = color;
 
     ctx.beginPath();
@@ -99,12 +99,16 @@
 
   });
 
+  let frames = 0;
+
   let state = 0;
   function logic() {
     switch (state) {
       case 0: // Scene 1 :
         objects[0].x = mouseX - objects[0].width/2;
         objects[0].y = mouseY - objects[0].height/2;
+        objects[1].rotation += Math.PI / 15;
+        objects[1].rotation %= 2*Math.PI;
         break;
       case 0:
         break;
@@ -128,13 +132,17 @@
 
     
     for (let ob of objects) {
-      if (ob.type == "rect") { // Draw rectangles
-        drawRoundedRect(ob.x, ob.y, ob.width, ob.height, ob.curve, ob.color);
+      if (ob.type == "rect") { // Draw rectangle
+        ctx.save();
+        ctx.translate(ob.x + ob.width/2, ob.y + ob.height/2);
+        ctx.rotate(ob.rotation);
+        drawRoundedRect(-ob.width/2, -ob.height/2, ob.width, ob.height, ob.curve, ob.color);
+        ctx.restore();
       } else if (ob.type == "text") { // Draw text
         ctx.fillStyle = ob.color;
         ctx.font = `${ob.size}px ${ob.font}`;
         ctx.fillText(ob.text, ob.x, ob.y);
-      } else if (ob.type == "image") {
+      } else if (ob.type == "image") { // Draw image 
         if (ob.img.complete) {
           ctx.drawImage(ob.img, ob.x, ob.y, ob.width, ob.height);
         }
@@ -149,6 +157,7 @@
   let frameTime = 1000 / fpsLimit; // ms per frame
   let lastFrame = 0;
   addImage(100, 100,200, 200, "https://pngimg.com/d/dog_PNG50361.png");
+  addRect(400, 200, 20, 200, "red", 15, Math.PI / 6);
   function mainLoop() {
     timestamp = Date.now();
     if (timestamp - lastFrame >= frameTime) {
