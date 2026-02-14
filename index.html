@@ -180,7 +180,7 @@ function drawRoundedRect(x, y, width, height, radius, color) {
           initialized = true;
         }
         if (clicked(3)) {
-          state = 1;
+          state = 5;
           initialized = false;
           mouseX, mouseY = 0;
         } else if (clicked(4)) {
@@ -213,8 +213,17 @@ function drawRoundedRect(x, y, width, height, radius, color) {
         }
         
         break;
+      case 5: // wedding for green card
+        if (!initialized) {
+            objects.length = 0;
+            addImage(200, 100,200, 400, "./Assets/GreenCard.png");
+            addImage(100, 300,200, 400, "./Assets/Nick.png");
+            addImage(300, 300,200, 400, "./Assets/Wedding.png");
+            initialized = true;
+         }
+        break;
     }
-
+    
   }
   let scalex = 2;
   let scaley = 2;
