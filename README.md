@@ -69,6 +69,9 @@
       img: img
     });
   }
+function clicked(i) {
+  return ((Math.abs((objects[i].x*scalex + objects[i].width*scalex / 2) - mouseX) < objects[i].width*scalex / 2)  && (Math.abs((objects[i].y*scaley + objects[i].width*scaley/2) - mouseY) < objects[i].height*scaley / 2));
+}
 
 function drawRoundedRect(x, y, width, height, radius, color) {
     ctx.fillStyle = color;
@@ -116,13 +119,13 @@ function drawRoundedRect(x, y, width, height, radius, color) {
             initialized = true;
          }
          // check for yes press
-         if ((Math.abs((objects[0].x + objects[0].width / 2) - mouseX) < objects[0].width / 2)  && (Math.abs((objects[0].y + objects[0].width/2) - mouseY) < objects[0].height / 2)) {
+         if (clicked(0)) {
           console.log("PRESSED YES");
           state = 1;
           initialized = false;
          }
          // check for no press
-         if ((Math.abs((objects[1].x + objects[1].width / 2) - mouseX) < objects[1].width / 2)  && (Math.abs((objects[1].y + objects[1].width/2) - mouseY) < objects[1].height / 2)) {
+         if (clicked(1)) {
           console.log("PRESSED NO");
          }
         break;
@@ -183,6 +186,8 @@ function drawRoundedRect(x, y, width, height, radius, color) {
   let lastFrame = 0;
   function mainLoop() {
     timestamp = Date.now();
+    scalex = canvas.width / 600;
+    scaley = canvas.height / 1080;
     if (timestamp - lastFrame >= frameTime) {
       lastFrame = timestamp;
       logic();
