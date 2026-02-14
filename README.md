@@ -266,7 +266,7 @@ function drawRoundedRect(x, y, width, height, radius, color) {
   let lastFrame = 0;
   function mainLoop() {
     timestamp = Date.now();
-    scalex = canvas.width / 600;
+    scalex = Math.min(canvas.width / 600, 2);
     scaley = canvas.height / 1080;
     if (timestamp - lastFrame >= frameTime) {
       lastFrame = timestamp;
