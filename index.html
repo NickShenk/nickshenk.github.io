@@ -70,7 +70,7 @@
     });
   }
 function clicked(i) {
-  return ((Math.abs((objects[i].x*scalex + objects[i].width*scalex / 2) - mouseX) < objects[i].width*scalex / 2)  && (Math.abs((objects[i].y*scaley + objects[i].height*scaley/2) - mouseY) < objects[i].height*scaley / 2));
+  return ((Math.abs(((objects[i].x + offset/4)*scalex  + objects[i].width*scalex / 2) - (mouseX - offset)) < objects[i].width*scalex / 2)  && (Math.abs((objects[i].y*scaley + objects[i].height*scaley/2) - mouseY) < objects[i].height*scaley / 2));
 }
 
 function drawRoundedRect(x, y, width, height, radius, color) {
@@ -218,12 +218,14 @@ function drawRoundedRect(x, y, width, height, radius, color) {
   }
   let scalex = 2;
   let scaley = 2;
+  let offset = 0;
   function draw() {
     // Clear screen
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     //console.log(objects.length)
     
     for (let ob of objects) {
+      ob.x += offset;
       if (ob.type == "rect") { // Draw rectangle
         ctx.save();
         ctx.translate(ob.x * scalex + (ob.width * scalex)/2, ob.y * scaley + (ob.height* scaley)/2);
@@ -255,7 +257,7 @@ function drawRoundedRect(x, y, width, height, radius, color) {
           }
         }
       }
-      
+      ob.x -= offset;
     }
 
     
@@ -267,6 +269,11 @@ function drawRoundedRect(x, y, width, height, radius, color) {
   function mainLoop() {
     timestamp = Date.now();
     scalex = Math.min(canvas.width / 600, 2);
+    if (scalex == 2) {
+      offset = (canvas.width - 1200)/4;
+    } else {
+      offset = 0;
+    }
     scaley = canvas.height / 1080;
     if (timestamp - lastFrame >= frameTime) {
       lastFrame = timestamp;
