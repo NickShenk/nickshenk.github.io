@@ -70,7 +70,7 @@
     });
   }
 function clicked(i) {
-  return ((Math.abs((objects[i].x*scalex + objects[i].width*scalex / 2) - mouseX) < objects[i].width*scalex / 2)  && (Math.abs((objects[i].y*scaley + objects[i].width*scaley/2) - mouseY) < objects[i].height*scaley / 2));
+  return ((Math.abs((objects[i].x*scalex + objects[i].width*scalex / 2) - mouseX) < objects[i].width*scalex / 2)  && (Math.abs((objects[i].y*scaley + objects[i].height*scaley/2) - mouseY) < objects[i].height*scaley / 2));
 }
 
 function drawRoundedRect(x, y, width, height, radius, color) {
@@ -106,7 +106,10 @@ function drawRoundedRect(x, y, width, height, radius, color) {
 
   let initialized = false;
   let state = 0;
-  
+  let global1 = 0;
+  let global2 = 0;
+  let global3 = 0;
+
   function logic() {
     switch (state) {
       case 0: // Scene 1 : will you be my valentine?
@@ -123,10 +126,14 @@ function drawRoundedRect(x, y, width, height, radius, color) {
           console.log("PRESSED YES");
           state = 1;
           initialized = false;
+          mouseX, mouseY = 0;
          }
          // check for no press
          if (clicked(1)) {
           console.log("PRESSED NO");
+          state = 2;
+          initialized = false;
+          mouseX, mouseY = 0;
          }
         break;
       case 1: // Scene 2 : Happy Family
@@ -139,15 +146,72 @@ function drawRoundedRect(x, y, width, height, radius, color) {
             initialized = true;
          }
         break;
-      case 2:
+      case 2: // ICE ARRIVES
+        if (!initialized) {
+          objects.length = 0;
+          frames = 0;
+          addImage(200, 300,200, 400, "./Assets/Thayna.png");
+          addImage(-200, 300,200, 400, "./Assets/ICE1.png"); // ideal location 50
+          addImage(600, 300,200, 400, "./Assets/ICE2.png"); // ideal location 350
+          global1 = (50 - objects[1].x) / (30 * 9); // 9 = 9 seconds
+          global2 = (350 - objects[2].x) / (30 * 9); // 9 = 9 seconds
+          initialized = true;
+        }
+        frames += 1;
+        objects[1].x += global1
+        objects[2].x += global2
+        if (frames >= 30*9) {
+          state = 3;
+          frames = 0;
+          initialized = false;
+        }
+        console.log(objects[1].x);
         break;
-      case 3:
+      case 3: // ask question again
+        if (!initialized) { 
+          objects.length = 0;
+          frames = 0;
+          addImage(200, 300,200, 400, "./Assets/Prison.png");
+          addImage(50, 300,200, 400, "./Assets/ICE1.png"); // ideal location 50
+          addImage(350, 300,200, 400, "./Assets/ICE2.png"); // ideal location 350
+          addImage(100, 700,200, 200, "./Assets/Yes.png");
+          addImage(300, 700,200, 200, "./Assets/No.png");
+          addImage(100, 100, 400, 200, "./Assets/Question.png");
+          initialized = true;
+        }
+        if (clicked(3)) {
+          state = 1;
+          initialized = false;
+          mouseX, mouseY = 0;
+        } else if (clicked(4)) {
+          state = 4;
+          initialized = false;
+          console.log("TO BRAZIL");
+          mouseX, mouseY = 0;
+        }
         break;
-      case 4:
-        break;
-      case 5:
-        break;
-      case 6:
+      case 4: // flight to brazil
+        if (!initialized) { 
+          objects.length = 0;
+          frames = 0;
+          addImage(25, 300,300, 300, "./Assets/USA.png");
+          addImage(375, 300,300, 300, "./Assets/Brazil.png"); // ideal location 50
+          global1 = 200;
+          global2 = 425;
+          addImage(0, 0,200, 400, "./Assets/Plane.png"); // 200 425 for USA :  550 425 for Brazil
+          initialized = true;
+          global3 = (550 - 200) / 100;
+        }
+        frames += 1;
+        k = frames /2;
+        // adjust size
+        if (k <= 100) {
+          objects[2].width = -(Math.pow(k-50,2))/12.5 + 200;
+          objects[2].height = 2 * objects[2].width;
+          objects[2].x = global1 - objects[2].width/2 + global3*k;
+          objects[2].y = global2 - objects[2].height/2;
+        }
+        
         break;
     }
 
@@ -172,7 +236,23 @@ function drawRoundedRect(x, y, width, height, radius, color) {
         ctx.fillText(ob.text, ob.x*scalex, ob.y*scaley);
       } else if (ob.type == "image") { // Draw image 
         if (ob.img.complete) {
-          ctx.drawImage(ob.img, ob.x*scalex, ob.y*scaley, ob.width*scalex, ob.height*scaley);
+          if (
+            ob.img &&
+            ob.img.complete &&
+            ob.img.naturalWidth !== 0 &&
+            ob.x * scalex + ob.width * scalex > 0 &&
+            ob.y * scaley + ob.height * scaley > 0 &&
+            ob.x * scalex < canvas.width &&
+            ob.y * scaley < canvas.height
+          ) {
+            ctx.drawImage(
+              ob.img,
+              ob.x * scalex,
+              ob.y * scaley,
+              ob.width * scalex,
+              ob.height * scaley
+            );
+          }
         }
       }
       
