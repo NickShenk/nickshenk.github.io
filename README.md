@@ -103,6 +103,7 @@ function drawRoundedRect(x, y, width, height, radius, color) {
 
   let initialized = false;
   let state = 0;
+  
   function logic() {
     switch (state) {
       case 0: // Scene 1 : will you be my valentine?
@@ -148,7 +149,8 @@ function drawRoundedRect(x, y, width, height, radius, color) {
     }
 
   }
-
+  let scalex = 2;
+  let scaley = 2;
   function draw() {
     // Clear screen
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -157,17 +159,17 @@ function drawRoundedRect(x, y, width, height, radius, color) {
     for (let ob of objects) {
       if (ob.type == "rect") { // Draw rectangle
         ctx.save();
-        ctx.translate(ob.x + ob.width/2, ob.y + ob.height/2);
+        ctx.translate(ob.x * scalex + (ob.width * scalex)/2, ob.y * scaley + (ob.height* scaley)/2);
         ctx.rotate(ob.rotation);
-        drawRoundedRect(-ob.width/2, -ob.height/2, ob.width, ob.height, ob.curve, ob.color);
+        drawRoundedRect(-(ob.width*scalex)/2, -(ob.height*scaley)/2, (ob.width*scalex), (ob.height*scaley), ob.curve, ob.color);
         ctx.restore();
       } else if (ob.type == "text") { // Draw text
         ctx.fillStyle = ob.color;
-        ctx.font = `${ob.size}px ${ob.font}`;
-        ctx.fillText(ob.text, ob.x, ob.y);
+        ctx.font = `${ob.size*(scalex+scaley)/2}px ${ob.font}`;
+        ctx.fillText(ob.text, ob.x*scalex, ob.y*scaley);
       } else if (ob.type == "image") { // Draw image 
         if (ob.img.complete) {
-          ctx.drawImage(ob.img, ob.x, ob.y, ob.width, ob.height);
+          ctx.drawImage(ob.img, ob.x*scalex, ob.y*scaley, ob.width*scalex, ob.height*scaley);
         }
       }
       
