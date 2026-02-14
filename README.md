@@ -101,26 +101,49 @@ function drawRoundedRect(x, y, width, height, radius, color) {
 
   let frames = 0;
 
+  let initialized = false;
   let state = 0;
   function logic() {
     switch (state) {
-      case 0: // Scene 1 :
-        objects[0].x = mouseX - objects[0].width/2;
-        objects[0].y = mouseY - objects[0].height/2;
-        objects[1].rotation += Math.PI / 15;
-        objects[1].rotation %= 2*Math.PI;
+      case 0: // Scene 1 : will you be my valentine?
+         if (!initialized) {
+            addImage(100, 700,200, 200, "./Assets/Yes.png");
+            addImage(300, 700,200, 200, "./Assets/No.png");
+            addImage(100, 100, 400, 200, "./Assets/Question.png");
+            addImage(100, 300,200, 400, "./Assets/Nick.png");
+            addImage(300, 300,200, 400, "./Assets/Thayna.png");
+            initialized = true;
+         }
+         // check for yes press
+         if ((Math.abs((objects[0].x + objects[0].width / 2) - mouseX) < objects[0].width / 2)  && (Math.abs((objects[0].y + objects[0].width/2) - mouseY) < objects[0].height / 2)) {
+          console.log("PRESSED YES");
+          state = 1;
+          initialized = false;
+         }
+         // check for no press
+         if ((Math.abs((objects[1].x + objects[1].width / 2) - mouseX) < objects[1].width / 2)  && (Math.abs((objects[1].y + objects[1].width/2) - mouseY) < objects[1].height / 2)) {
+          console.log("PRESSED NO");
+         }
         break;
-      case 0:
+      case 1: // Scene 2 : Happy Family
+         console.log("RAN");
+         if (!initialized) {
+            objects.length = 0;
+            addImage(200, 100,200, 200, "./Assets/Heart.png");
+            addImage(100, 300,200, 400, "./Assets/Nick.png");
+            addImage(300, 300,200, 400, "./Assets/Thayna.png");
+            initialized = true;
+         }
         break;
-      case 0:
+      case 2:
         break;
-      case 0:
+      case 3:
         break;
-      case 0:
+      case 4:
         break;
-      case 0:
+      case 5:
         break;
-      case 0:
+      case 6:
         break;
     }
 
@@ -129,7 +152,7 @@ function drawRoundedRect(x, y, width, height, radius, color) {
   function draw() {
     // Clear screen
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+    //console.log(objects.length)
     
     for (let ob of objects) {
       if (ob.type == "rect") { // Draw rectangle
@@ -156,8 +179,6 @@ function drawRoundedRect(x, y, width, height, radius, color) {
   let fpsLimit = 30;
   let frameTime = 1000 / fpsLimit; // ms per frame
   let lastFrame = 0;
-  addImage(100, 100,200, 200, "https://pngimg.com/d/dog_PNG50361.png");
-  addRect(400, 200, 20, 200, "red", 15, Math.PI / 6);
   function mainLoop() {
     timestamp = Date.now();
     if (timestamp - lastFrame >= frameTime) {
