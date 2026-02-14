@@ -69,6 +69,9 @@
       img: img
     });
   }
+function clicked(i) {
+  return ((Math.abs((objects[i].x*scalex + objects[i].width*scalex / 2) - mouseX) < objects[i].width*scalex / 2)  && (Math.abs((objects[i].y*scaley + objects[i].width*scaley/2) - mouseY) < objects[i].height*scaley / 2));
+}
 
 function drawRoundedRect(x, y, width, height, radius, color) {
     ctx.fillStyle = color;
@@ -103,6 +106,7 @@ function drawRoundedRect(x, y, width, height, radius, color) {
 
   let initialized = false;
   let state = 0;
+  
   function logic() {
     switch (state) {
       case 0: // Scene 1 : will you be my valentine?
@@ -115,13 +119,13 @@ function drawRoundedRect(x, y, width, height, radius, color) {
             initialized = true;
          }
          // check for yes press
-         if ((Math.abs((objects[0].x + objects[0].width / 2) - mouseX) < objects[0].width / 2)  && (Math.abs((objects[0].y + objects[0].width/2) - mouseY) < objects[0].height / 2)) {
+         if (clicked(0)) {
           console.log("PRESSED YES");
           state = 1;
           initialized = false;
          }
          // check for no press
-         if ((Math.abs((objects[1].x + objects[1].width / 2) - mouseX) < objects[1].width / 2)  && (Math.abs((objects[1].y + objects[1].width/2) - mouseY) < objects[1].height / 2)) {
+         if (clicked(1)) {
           console.log("PRESSED NO");
          }
         break;
@@ -148,7 +152,8 @@ function drawRoundedRect(x, y, width, height, radius, color) {
     }
 
   }
-
+  let scalex = 2;
+  let scaley = 2;
   function draw() {
     // Clear screen
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -157,17 +162,17 @@ function drawRoundedRect(x, y, width, height, radius, color) {
     for (let ob of objects) {
       if (ob.type == "rect") { // Draw rectangle
         ctx.save();
-        ctx.translate(ob.x + ob.width/2, ob.y + ob.height/2);
+        ctx.translate(ob.x * scalex + (ob.width * scalex)/2, ob.y * scaley + (ob.height* scaley)/2);
         ctx.rotate(ob.rotation);
-        drawRoundedRect(-ob.width/2, -ob.height/2, ob.width, ob.height, ob.curve, ob.color);
+        drawRoundedRect(-(ob.width*scalex)/2, -(ob.height*scaley)/2, (ob.width*scalex), (ob.height*scaley), ob.curve, ob.color);
         ctx.restore();
       } else if (ob.type == "text") { // Draw text
         ctx.fillStyle = ob.color;
-        ctx.font = `${ob.size}px ${ob.font}`;
-        ctx.fillText(ob.text, ob.x, ob.y);
+        ctx.font = `${ob.size*(scalex+scaley)/2}px ${ob.font}`;
+        ctx.fillText(ob.text, ob.x*scalex, ob.y*scaley);
       } else if (ob.type == "image") { // Draw image 
         if (ob.img.complete) {
-          ctx.drawImage(ob.img, ob.x, ob.y, ob.width, ob.height);
+          ctx.drawImage(ob.img, ob.x*scalex, ob.y*scaley, ob.width*scalex, ob.height*scaley);
         }
       }
       
@@ -181,6 +186,8 @@ function drawRoundedRect(x, y, width, height, radius, color) {
   let lastFrame = 0;
   function mainLoop() {
     timestamp = Date.now();
+    scalex = canvas.width / 600;
+    scaley = canvas.height / 1080;
     if (timestamp - lastFrame >= frameTime) {
       lastFrame = timestamp;
       logic();
